@@ -4,21 +4,32 @@
 from __future__ import print_function
 import sys
 
-def PrintLink(bas, part1, part2, part3):
-	out = ""
-	for i in el1:
-		out += alphabet[el1[i]]
+def PrintLink(bas, abc, part1, part2, part3):
+	out = bas
+	i = 0
+	while i < 2:
+		out += abc[part1[i]]
+		i += 1
 
 	out += "/"
+	i = 0
+	while i < 10:
+		out += abc[part2[i]]
+		i += 1
 
-	for i in el2:
-		out += alphabet[el2[i]]
-
-	out += alphabet[el3]
+	out += abc[part3]
 	out += ".jpg"
-	print(bas + out)
+	print(out)
 
-
+def NumIncrement(el, pos, bas):
+	while True:
+		el[pos] += 1
+		if el[pos] >= bas and pos > 0:
+			el[pos] = 0
+			pos -= 1
+		else:
+			break
+	return el
 
 alphabet = ['0', '1', '2', '3',
 '4', '5', '6', '7',
@@ -39,18 +50,23 @@ alphabet = ['0', '1', '2', '3',
 
 base = 64
 
-print("Input any image VK link")
+#print("Input any image VK link")
 href = sys.stdin.readline()
 basic = href[:39]
 
 el1 = [0, 0]
-el2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-el3 = 0
+#el2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+#el3 = 0
 
-PrintLink(basic, el1, el2, el3)
+#PrintLink(basic, el1, el2, el3)
 
-
-#print(href[:39])
-#while el1[0] < base:
-#	while el2[0] < base:
-#		while el3 < base:
+while el1[0] < base:
+	el2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	while el2[0] < base:
+		el3 = 0
+		while el3 < base:
+			PrintLink(basic, alphabet, el1, el2, el3)
+			#print(el1, el2, el3)
+			el3 += 4
+		NumIncrement(el2, 9, base)
+	NumIncrement(el1, 1, base)
