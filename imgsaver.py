@@ -3,23 +3,37 @@
 
 from __future__ import print_function
 import sys
+import time
+import os
+import urllib
+import ImageFile
 
 def PrintLink(bas, abc, part1, part2, part3):
-	out = bas
+	href = bas
+	ImgName = "images/"
 	i = 0
 	while i < 2:
-		out += abc[part1[i]]
+		href += abc[part1[i]]
+		ImgName += abc[part1[i]]
 		i += 1
 
-	out += "/"
+	href += "/"
+	ImgName += "-"
 	i = 0
 	while i < 10:
-		out += abc[part2[i]]
+		href += abc[part2[i]]
+		ImgName += abc[part2[i]]
 		i += 1
 
-	out += abc[part3]
-	out += ".jpg"
-	print(out)
+	href += abc[part3]
+	ImgName += abc[part3]
+	href += ".jpg"
+	ImgName += ".jpg"
+	if GetSize(href) > 82:
+		LoadImg(href, ImgName)
+		print(href + " => " + ImgName)
+	else:
+		print(href + " - Bad image")
 
 def NumIncrement(el, pos, bas):
 	while True:
@@ -30,6 +44,33 @@ def NumIncrement(el, pos, bas):
 		else:
 			break
 	return el
+
+def LoadImg(href, name):
+	resource = urllib.urlopen(href)
+	out = open(name, 'wb')
+	#print(os.path.getsize(resource.read()))
+	out.write(resource.read())
+	out.close()
+
+def GetSize(uri):
+	# get file size *and* image size (None if not known)
+	file = urllib.urlopen(uri)
+	size = file.headers.get("content-length")
+	if size: size = int(size)
+	p = ImageFile.Parser()
+	while 1:
+		data = file.read(1024)
+		if not data:
+			break
+		p.feed(data)
+		if p.image:
+			return size
+			#return size, p.image.size
+			break
+	file.close()
+	return size
+
+
 
 alphabet = ['0', '1', '2', '3',
 '4', '5', '6', '7',
@@ -60,13 +101,19 @@ el1 = [0, 0]
 
 #PrintLink(basic, el1, el2, el3)
 
+cnt = 0
 while el1[0] < base:
 	el2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	while el2[0] < base:
 		el3 = 0
 		while el3 < base:
-			PrintLink(basic, alphabet, el1, el2, el3)
+			ImgName = PrintLink(basic, alphabet, el1, el2, el3)
+			time.sleep(1)
 			#print(el1, el2, el3)
 			el3 += 4
+			cnt += 1
+			if cnt > 300:
+				cnt = 0
+				time.sleep(30)
 		NumIncrement(el2, 9, base)
 	NumIncrement(el1, 1, base)
