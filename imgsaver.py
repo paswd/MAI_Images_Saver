@@ -7,7 +7,26 @@ import time
 import os
 import urllib
 import ImageFile
+#import requests
 
+proxies = {
+	'http': '187.33.46.146:3128',
+	'http': '176.9.59.80:3128',
+	'http': '5.172.189.131:3128',
+	'http': '212.204.91.206:8080',
+	'http': '200.30.189.70:8080',
+	'http': '105.211.254.16:80',
+	'http': '82.195.156.16:3128',
+	'http': '211.47.128.126:8080',
+	'http': '23.226.137.61:3128',
+	'http': '93.174.55.82:8080',
+	'http': '59.125.130.154:80',
+	'http': '158.69.48.22:8080',
+	'http': '108.170.13.23:8888',
+	'http': '96.45.112.170:80',
+	'http': '91.121.2.132:3128',
+	'http': '107.167.111.44:80'
+}
 def PrintLink(bas, abc, part1, part2, part3):
 	href = bas
 	ImgName = "images/"
@@ -29,11 +48,11 @@ def PrintLink(bas, abc, part1, part2, part3):
 	ImgName += abc[part3]
 	href += ".jpg"
 	ImgName += ".jpg"
-	if GetSize(href) > 82:
-		LoadImg(href, ImgName)
-		print(href + " => " + ImgName)
-	else:
-		print(href + " - Bad image")
+	#if GetSize(href) > 82:
+	LoadImg(href, ImgName)
+	print(href + " => " + ImgName)
+	#else:
+	#	print(href + " - Bad image")
 
 def NumIncrement(el, pos, bas):
 	while True:
@@ -46,7 +65,7 @@ def NumIncrement(el, pos, bas):
 	return el
 
 def LoadImg(href, name):
-	resource = urllib.urlopen(href)
+	resource = urllib.urlopen(href, proxies=proxies)
 	out = open(name, 'wb')
 	#print(os.path.getsize(resource.read()))
 	out.write(resource.read())
@@ -54,7 +73,7 @@ def LoadImg(href, name):
 
 def GetSize(uri):
 	# get file size *and* image size (None if not known)
-	file = urllib.urlopen(uri)
+	file = urllib.urlopen(uri, proxies=proxies)
 	size = file.headers.get("content-length")
 	if size: size = int(size)
 	p = ImageFile.Parser()
